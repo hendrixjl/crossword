@@ -6,10 +6,52 @@
 //  Copyright © 2015 Jonathan Hendrix. All rights reserved.
 //
 
+#include "answer.h"
+#include "grid.h"
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+//#include <cstdlib>
+using namespace std;
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    
+    if (!answer::ut()) {
+        return false;
+    }
+    
+    ifstream in{"words.txt"};
+    if (!in) {
+        cout << "could not open gdata.txt\n";
+        return 1;
+    }
+    
+    vector<answer> ans;
+    auto line = string{};
+    
+    while (getline(in, line)) {
+        if (!line.empty() && !(line[0] == '#')) {
+            ans.push_back(answer{line});
+        }
+    }
+    
+    for (const auto& a : ans) {
+        cout << a.to_string() << endl;
+    }
+
+    auto mypuz = puzzle{ans};
+    
+    auto grid = mypuz.render();
+    
+       for (const auto& l : grid) {
+           cout << l << endl;
+       }
+
+
+    if (!puzzle::ut()) {
+        cout << "puzzle::ut() failed\n";
+        return 1;
+    }
     return 0;
 }
