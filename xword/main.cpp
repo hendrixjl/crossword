@@ -8,6 +8,7 @@
 
 #include "answer.h"
 #include "grid.h"
+#include "puzzle.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -20,7 +21,13 @@ int main(int argc, const char * argv[]) {
     if (!answer::ut()) {
         return false;
     }
+
     
+    if (!puzzle::ut()) {
+        cout << "puzzle::ut() failed\n";
+        return 1;
+    }
+
     ifstream in{"words.txt"};
     if (!in) {
         cout << "could not open gdata.txt\n";
@@ -48,10 +55,5 @@ int main(int argc, const char * argv[]) {
            cout << l << endl;
        }
 
-
-    if (!puzzle::ut()) {
-        cout << "puzzle::ut() failed\n";
-        return 1;
-    }
     return 0;
 }
