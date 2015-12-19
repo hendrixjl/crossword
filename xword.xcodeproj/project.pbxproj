@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5D150B9B1C1FA8EC00CE8F61 /* grid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D150B9A1C1FA8EC00CE8F61 /* grid.cpp */; };
+		5D150B9E1C259AB100CE8F61 /* puzzle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D150B9C1C259AB100CE8F61 /* puzzle.cpp */; };
 		5D9546871C167A2B00EFDE27 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9546861C167A2B00EFDE27 /* main.cpp */; };
 		5D9546911C18FEF300EFDE27 /* answer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D9546901C18FEF300EFDE27 /* answer.cpp */; };
 /* End PBXBuildFile section */
@@ -27,6 +28,8 @@
 /* Begin PBXFileReference section */
 		5D150B991C1E1F4500CE8F61 /* words.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = words.txt; sourceTree = "<group>"; };
 		5D150B9A1C1FA8EC00CE8F61 /* grid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = grid.cpp; sourceTree = "<group>"; };
+		5D150B9C1C259AB100CE8F61 /* puzzle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = puzzle.cpp; sourceTree = "<group>"; };
+		5D150B9D1C259AB100CE8F61 /* puzzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = puzzle.h; sourceTree = "<group>"; };
 		5D9546831C167A2B00EFDE27 /* xword */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xword; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D9546861C167A2B00EFDE27 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		5D95468D1C167A9300EFDE27 /* answer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = answer.h; sourceTree = "<group>"; };
@@ -72,6 +75,8 @@
 				5D95468F1C17A9B900EFDE27 /* grid.h */,
 				5D150B9A1C1FA8EC00CE8F61 /* grid.cpp */,
 				5D9546901C18FEF300EFDE27 /* answer.cpp */,
+				5D150B9C1C259AB100CE8F61 /* puzzle.cpp */,
+				5D150B9D1C259AB100CE8F61 /* puzzle.h */,
 			);
 			path = xword;
 			sourceTree = "<group>";
@@ -133,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D9546871C167A2B00EFDE27 /* main.cpp in Sources */,
+				5D150B9E1C259AB100CE8F61 /* puzzle.cpp in Sources */,
 				5D9546911C18FEF300EFDE27 /* answer.cpp in Sources */,
 				5D150B9B1C1FA8EC00CE8F61 /* grid.cpp in Sources */,
 			);
