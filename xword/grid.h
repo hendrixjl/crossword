@@ -60,12 +60,10 @@ inline std::vector<int> find_places(const std::string& word, const std::string& 
 {
     auto temp = slice;
     auto result = look_before(word, temp);
-    auto slice_loc = std::size_t{0};
-    while ((slice_loc = temp.find(word[0], slice_loc)) != std::string::npos) {
+    for (auto slice_loc = std::size_t{0}; slice_loc < slice.size(); ++slice_loc) {
         if (can_place(word, slice, slice_loc)) {
             result.push_back(static_cast<int>(slice_loc));
         }
-        ++slice_loc;
     }
     return result;
 }
@@ -228,7 +226,7 @@ private:
             for (auto aplace : aplaces) {
                 const auto coord = std::make_pair(static_cast<int>(aplace),
                                                   static_cast<int>(i));
-                res.emplace_back(answer{word, coord, direction::DOWN});
+                res.emplace_back(answer{word, coord, direction::ACROSS});
             }
         }
     }

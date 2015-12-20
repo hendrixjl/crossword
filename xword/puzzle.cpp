@@ -101,6 +101,27 @@ bool test_puzzle_place()
     return true;
 }
 
+bool test_puzzle_find_places()
+{
+    auto start_answers = std::vector<answer>{answer{"4 4 A C AMAZIAH"},
+        answer{"4 2 D C YEA"},
+        answer{"6 3 D C MAGOG"}};
+    
+    auto mypuz = puzzle{start_answers};
+    mypuz.render(cout);
+    
+    auto new_answers = mypuz.find_places("HAPPY");
+    if (new_answers.empty()) {
+        cout << "Error in ut. should not have failed." << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    for (const auto na : new_answers) {
+        cout << na.to_string() << endl;
+    }
+
+    return true;
+}
 
 bool puzzle::ut()
 {
@@ -131,6 +152,10 @@ bool puzzle::ut()
     }
     
     if (!test_puzzle_place()) {
+        return false;
+    }
+    
+    if (!test_puzzle_find_places()) {
         return false;
     }
     

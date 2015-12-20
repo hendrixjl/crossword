@@ -144,25 +144,55 @@ bool test_grid_find_places()
         return false;
     }
     
-    if (ans.size()  != 3) {
-        cout << "Error in ut. wrong count on placing " << word << " size=" << ans.size() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+    
+    auto compare_to = std::vector<answer>{
+        answer{"0 -3 D I POSH"}, answer{"-3 0 A I POSH"}, answer{"-1 4 A I POSH"}};
+    
+    if (!is_permutation(ans.cbegin(), ans.cend(), compare_to.cbegin())) {
+        cout << "Expected permuation not equal. Line=" << __LINE__ << " file=" << __FILE__ << "\n";
+        cout << " Was:\n";
+        for (const auto& e : ans) {
+            cout << e.to_string() << ", ";
+        }
+        cout << "\n Expected:\n";
+        for (const auto& e : compare_to) {
+            cout << e.to_string() << ", ";
+        }
         return false;
     }
     
-    if (ans[0].to_string() != "0 -3 D I POSH") { // Todo: If new word is formed, shouldn't it be subsumed?
-        cout << "Error in ut. ans[0]=" << ans[0].to_string() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
-        return false;
-    }
+//    auto start_answers = std::vector<answer>{answer{"4 4 A C AMAZIAH"},
+//        answer{"4 2 D C YEA"},
+//        answer{"6 3 D C MAGOG"}};
     
-    if (ans[1].to_string() != "-3 0 D I POSH") {
-        cout << "Error in ut. ans[1]=" << ans[1].to_string() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
-        return false;
-    }
+    mygrid = grid{};
+    mygrid.resize(make_pair(10, 10));
+    mygrid.overlay(answer{"1 1 A C AMAZIAH"});
     
-    if (ans[2].to_string() != "-1 4 D I POSH") {
-        cout << "Error in ut. ans[2]=" << ans[2].to_string() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+    ans = mygrid.find_places("HAPPY");
+    
+    if (ans.empty()) {
+        cout << "Error in ut. should not have failed." << " line=" << __LINE__ << " file=" << __FILE__ << endl;
         return false;
     }
+        
+    compare_to = std::vector<answer>{
+        answer{"1 0 D I HAPPY"}, answer{"3 0 D I HAPPY"}, answer{"6 0 D I HAPPY"}, answer{"7 1 D I HAPPY"}, answer{"7 1 A I HAPPY"}
+    };
+    
+    if (!is_permutation(ans.cbegin(), ans.cend(), compare_to.cbegin())) {
+        cout << "Expected permuation not equal. Line=" << __LINE__ << " file=" << __FILE__ << "\n";
+        cout << " Was:\n";
+        for (const auto& e : ans) {
+            cout << e.to_string() << ", ";
+        }
+        cout << "\n Expected:\n";
+        for (const auto& e : compare_to) {
+            cout << e.to_string() << ", ";
+        }
+        return false;
+    }
+
     
     return true;
 }

@@ -27,10 +27,10 @@ int main(int argc, const char * argv[]) {
         return 1;
     }
     
-    if (!puzzle::ut()) {
-        cout << "puzzle::ut() failed\n";
-        return 1;
-    }
+//    if (!puzzle::ut()) {
+//        cout << "puzzle::ut() failed\n";
+//        return 1;
+//    }
     
 //    try {
 //    
