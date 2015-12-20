@@ -8,7 +8,7 @@
 
 #include "answer.h"
 #include "grid.h"
-#include "puzzle.h"
+//#include "puzzle.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -22,38 +22,29 @@ int main(int argc, const char * argv[]) {
         return false;
     }
 
-    
-    if (!puzzle::ut()) {
-        cout << "puzzle::ut() failed\n";
-        return 1;
-    }
-
-    ifstream in{"words.txt"};
-    if (!in) {
-        cout << "could not open gdata.txt\n";
+    if (!grid::ut()) {
+        cout << "grid::uit() failed\n";
         return 1;
     }
     
-    vector<answer> ans;
-    auto line = string{};
+//    if (!puzzle::ut()) {
+//        cout << "puzzle::ut() failed\n";
+//        return 1;
+//    }
     
-    while (getline(in, line)) {
-        if (!line.empty() && !(line[0] == '#')) {
-            ans.push_back(answer{line});
-        }
-    }
-    
-    for (const auto& a : ans) {
-        cout << a.to_string() << endl;
-    }
-
-    auto mypuz = puzzle{ans};
-    
-    auto grid = mypuz.render();
-    
-       for (const auto& l : grid) {
-           cout << l << endl;
-       }
-
+//    try {
+//    
+//        auto mypuz = load_puzzle("words.txt");
+//
+//        auto grid = mypuz.render();
+//        
+//        for (const auto& l : grid) {
+//            cout << l << endl;
+//        }
+//
+//    }
+//    catch (exception& e) {
+//        cout << "Exception! " << e.what() << endl;
+//    }
     return 0;
 }

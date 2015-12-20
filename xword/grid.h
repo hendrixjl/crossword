@@ -15,10 +15,66 @@
 #include <string>
 #include <utility>
 
+/**
+ * Can the word be placed in the given position of the slice
+ * (a row or column of the grid)?
+ * there must at least be one actual letter match
+ */
+inline bool can_place(const std::string& word,
+               const std::string& slice, std::size_t slice_loc)
+{
+    auto one_exact_match = bool{false};
+    const auto slice_to_match = slice.substr(slice_loc);
+    auto stop_at_len = (word.size() > slice_to_match.size()) ? slice_to_match.size() : word.size();
+    for (auto i = std::size_t{0}; i<stop_at_len; ++i) {
+        auto exact_match = (slice_to_match[i] == word[i]);
+        auto blank_match = (slice_to_match[i] == ' ');
+        if ((!exact_match) && (!blank_match)) {
+            return false;
+        }
+        one_exact_match = one_exact_match || exact_match;
+    }
+    return one_exact_match;
+}
+
+/**
+ * try to fit pieces of the word before the slice (a row or column of
+ * the grid)?
+ */
+inline std::vector<int> look_before(const std::string& word, const std::string& slice)
+{
+    auto res = std::vector<int>{};
+    for (auto i=std::size_t{1}; i<word.size(); ++i) {
+        if (can_place(word.substr(i), slice, 0)) {
+            res.push_back(-static_cast<int>(i));
+        }
+    }
+    return res;
+}
+
+/**
+ * Where will the answer fit along the slice (a row or column of
+ * the grid)?
+ */
+inline std::vector<int> find_places(const std::string& word, const std::string& slice)
+{
+    auto temp = slice;
+    auto result = look_before(word, temp);
+    auto slice_loc = std::size_t{0};
+    while ((slice_loc = temp.find(word[0], slice_loc)) != std::string::npos) {
+        if (can_place(word, slice, slice_loc)) {
+            result.push_back(static_cast<int>(slice_loc));
+        }
+        ++slice_loc;
+    }
+    return result;
+}
+
 // handy abstraction of an m-by-n char grid.
 class grid
 {
 public:
+    static bool ut();
     
     void resize(std::pair<int,int> extremes)
     {
@@ -32,7 +88,6 @@ public:
         }
     }
 
-    
     void overlay(const answer& ans)
     {
         auto letters = ans.letters();
@@ -52,21 +107,12 @@ public:
         return static_cast<int>(grid_[0].size());
     }
     
-    std::vector<std::string> render() const {
-        return grid_;
-    }
-    
     // return grid columns as a vector of strings
     std::vector<std::string> get_columns() const {
         auto res = std::vector<std::string>{};
         const auto cols = columns();
-        const auto rws = rows();
         for (auto across = int{0}; across < cols; ++across) {
-            auto s = std::string{};
-            for (auto down = int{0}; down < rws; ++down) {
-                s += grid_[down][across];
-            }
-            res.push_back(s);
+            res.push_back(get_column(across));
         }
         return res;
     }
@@ -76,33 +122,108 @@ public:
         auto res = std::vector<std::string>{};
         const auto irows = rows();
         for (auto down = int{0}; down < irows; ++down) {
-            res.push_back(grid_[down]);
+            res.push_back(get_row(down));
         }
         return res;
     }
 
-    /**
-     * See if there is a conflict between the proposed answer
-     * and the present state of the grid
-     */
-    bool conflict(const answer& ans) const
-    {
-        const auto letters = ans.letters();
-        for (const auto letter : letters) {
-            const auto across = std::get<0>(letter);
-            const auto down = std::get<1>(letter);
-            const bool fits = (grid_[down][across] == std::get<2>(letter)) ||
-            (grid_[down][across] == ' ');
-            if (!fits) {
-                return true; // conflict!
-            }
-        }
-        return false;
+    std::vector<std::string> render() const {
+        return grid_;
     }
-
+    
+    bool can_place(const answer& ans) const
+    {
+        if (ans.get_dir() == direction::ACROSS) {
+            return can_place_across(ans);
+        }
+        else {
+            return can_place_down(ans);
+        }
+    }
+    
+    std::vector<answer> find_places(const std::string& word) const
+    {
+        auto res = std::vector<answer>{};
+        find_places_across(res, word);
+        find_places_down(res, word);
+        return res;
+    }
+    
 private:
     std::vector<std::string> grid_;
+    
+    
+    // return grid columns as a string
+    std::string get_column(int across) const {
+        if ((across < 0) || across > columns()) {
+            return std::string{}; // no good
+        }
+        const auto rws = rows();
+        auto s = std::string{};
+        for (auto down = int{0}; down < rws; ++down) {
+            s += grid_[down][across];
+        }
+        return s;
+    }
+    
+    // return grid row as strings
+    std::string get_row(int down) const {
+        if ((down < 0) || down > rows()) {
+            return std::string{}; // no good
+        }
+        return grid_[down];
+    }
 
+    
+    bool can_place_down(const answer& ans) const
+    {
+        const auto across = std::get<0>(ans.coordinate());
+        const auto down = std::get<1>(ans.coordinate());
+        if ((down < 0) || (down > rows()) || (across > columns())) {
+            return true; // no good
+        }
+        const auto word = (across >= 0) ? ans.get_word() : ans.get_word().substr(-across);
+        auto slice = get_column(across);
+        return ::can_place(word, slice, 0);
+    }
+
+    bool can_place_across(const answer& ans) const
+    {
+        const auto across = std::get<0>(ans.coordinate());
+        const auto down = std::get<1>(ans.coordinate());
+        if ((across < 0) || (across > columns()) || (down > rows())) {
+            return true; // no good
+        }
+        const auto word = (down >= 0) ? ans.get_word() : ans.get_word().substr(-down);
+        auto slice = get_row(down); // todo what if across is negative?
+        return ::can_place(word, slice, 0);
+    }
+    
+    void find_places_across(std::vector<answer>& res, const std::string& word) const
+    {
+        const auto columns = get_columns();
+        for (auto i = std::size_t{}; i<columns.size(); ++i) {
+            auto dplaces = ::find_places(word, columns[i]);
+            for (auto dplace : dplaces) {
+                const auto coord = std::make_pair(static_cast<int>(i),
+                                                  static_cast<int>(dplace));
+                res.emplace_back(answer{word, coord, direction::DOWN});
+            }
+        }
+    }
+    
+    void find_places_down(std::vector<answer>& res, const std::string& word) const
+    {
+        const auto rows = get_rows();
+        for (auto i = std::size_t{}; i<rows.size(); ++i) {
+            auto aplaces = ::find_places(word, rows[i]);
+            for (auto aplace : aplaces) {
+                const auto coord = std::make_pair(static_cast<int>(aplace),
+                                                  static_cast<int>(i));
+                res.emplace_back(answer{word, coord, direction::DOWN});
+            }
+        }
+    }
 };
 
 

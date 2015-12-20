@@ -31,8 +31,34 @@ std::vector<answer> delta_list(std::vector<answer> one, std::vector<answer> two)
     return result;
 }
 
+bool test_puzzle_can_place()
+{
+    auto start_answers = std::vector<answer>{answer{"2 4 A C AMAZIAH"}};
+    auto mypuz = puzzle{start_answers};
+    
+    if (mypuz.can_place("food"))
+    {
+        cout << "Food shouldn't fit.\n";
+        return false;
+    }
+    
+    if (!mypuz.can_place("ICECYCLE"))
+    {
+        cout << "Should be able to place ICECYCLE.\n";
+        return false;
+    }
+
+    return true;
+}
+
 bool puzzle::ut()
 {
+    if (!test_puzzle_can_place())
+    {
+        cout << "test_can_place() failed.\n";
+        return false;
+    }
+    
     auto start_answers = std::vector<answer>{answer{"2 4 A C AMAZIAH"},
         answer{"1 7 A C AZOG"},
         answer{"8 8 A C BRAVE"},
@@ -83,3 +109,4 @@ bool puzzle::ut()
     
     return true;
 }
+

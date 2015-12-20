@@ -14,6 +14,8 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <fstream>
+#include <exception>
 
 class puzzle
 {
@@ -32,14 +34,6 @@ public:
         return grid_.render();
     }
     
-    //    std::vector<answer> retrieve_answers() const
-    //    {
-    //        std::vector<answer> res;
-    //        fetch_across(res);
-    //        fetch_down(res);
-    //        return res;
-    //    }
-    
     // Return the resultant answer list if the input
     // answer is added. If the list is empty, then the
     // input answer conflicted with the current state of
@@ -47,7 +41,7 @@ public:
     std::vector<answer> place(const answer& ans) const
     {
         std::vector<answer> result;
-        if (!grid_.conflict(ans))
+        if (grid_.can_place(ans))
         {
             auto newpuzzle = puzzle{answers_};
             newpuzzle.overlay(ans);
@@ -58,25 +52,21 @@ public:
         return result;
     }
     
+    bool can_place(const std::string& word) const
+    {
+        return false;
+    }
+    
+    std::vector<answer> find_places(const std::string& word) const
+    {
+        auto result = grid_.find_places(word);
+        auto extremes = find_upper_left_limits(result);
+        return ::translate(-std::get<0>(extremes), -std::get<1>(extremes), result);
+    }
+    
 private:
     grid grid_;
     std::vector<answer> answers_;
-    
-    std::pair<int,int> find_limits(const std::vector<answer> answers) const
-    {
-        auto biggest_a = int{};
-        auto biggest_d = int{};
-        for (const auto& answer : answers)
-        {
-            if (answer.last_coordinate().first > biggest_a) {
-                biggest_a = answer.last_coordinate().first;
-            }
-            if (answer.last_coordinate().second > biggest_d) {
-                biggest_d = answer.last_coordinate().second;
-            }
-        }
-        return std::make_pair(biggest_a, biggest_d);
-    }
     
     void resize(std::pair<int,int> extremes)
     {
@@ -115,6 +105,22 @@ private:
     }
 };
 
-
+inline puzzle load_puzzle(const std::string& filename)
+{
+    std::ifstream in{filename};
+    if (!in) {
+        throw std::invalid_argument(std::string{"Could not open: " + filename});
+    }
+    
+    std::vector<answer> ans;
+    auto line = std::string{};
+    
+    while (std::getline(in, line)) {
+        if (!line.empty() && !(line[0] == '#')) {
+            ans.push_back(answer{line});
+        }
+    }
+    return puzzle{ans};
+}
 
 #endif /* puzzle_hpp */
