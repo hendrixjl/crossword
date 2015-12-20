@@ -77,17 +77,93 @@ bool test_look_before()
 bool test_find_places()
 {
     auto word = std::string{"BOB"};
-    auto slice = std::string{" A B B C B"};
+    auto slice = std::string{"B A B B C B"};
     auto places = find_places(word, slice);
-    if (places.size() != 2) {
+    if (places.size() != 3) {
         cout << "Error in ut. places.size()=" << places.size() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
     }
-    if (places[0] != 3) {
+    if (places[0] != -2) {
         cout << "Error in ut. places[0]=" << places[0] << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
     }
-    if (places[1] != 9) {
+    if (places[1] != 4) {
+        cout << "Error in ut. places[0]=" << places[0] << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    if (places[2] != 10) {
         cout << "Error in ut. places[1]=" << places[1] << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
     }
+    return true;
+}
+
+bool test_grid_find_places()
+{
+    auto mygrid = grid{};
+    mygrid.resize(make_pair(10,10));
+    mygrid.overlay(answer{"HELLO", make_pair(0,0), direction::ACROSS});
+    
+    auto word = std::string{"HOE"};
+    auto ans = mygrid.find_places(word);
+    
+    if (ans.empty()) {
+        cout << "Error in ut. grid couldn't place " << word << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    if (ans.size()  != 3) {
+        cout << "Error in ut. wrong count on placing " << word << " size=" << ans.size() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    if (ans[0].to_string() != "0 0 D I HOE") {
+        cout << "Error in ut. ans[0]=" << ans[0].to_string() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    if (ans[1].to_string() != "1 -2 D I HOE") {
+        cout << "Error in ut. ans[1]=" << ans[1].to_string() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    if (ans[2].to_string() != "4 -1 D I HOE") {
+        cout << "Error in ut. ans[2]=" << ans[2].to_string() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    mygrid = grid{};
+    mygrid.resize(make_pair(10,10));
+    mygrid.overlay(answer{"HELLO", make_pair(0,0), direction::DOWN});
+    
+    word = std::string{"POSH"};
+    ans = mygrid.find_places(word);
+    
+    if (ans.empty()) {
+        cout << "Error in ut. grid couldn't place " << word << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    if (ans.size()  != 3) {
+        cout << "Error in ut. wrong count on placing " << word << " size=" << ans.size() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    if (ans[0].to_string() != "0 -3 D I POSH") { // Todo: If new word is formed, shouldn't it be subsumed?
+        cout << "Error in ut. ans[0]=" << ans[0].to_string() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    if (ans[1].to_string() != "-3 0 D I POSH") {
+        cout << "Error in ut. ans[1]=" << ans[1].to_string() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    if (ans[2].to_string() != "-1 4 D I POSH") {
+        cout << "Error in ut. ans[2]=" << ans[2].to_string() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
     return true;
 }
 
@@ -157,6 +233,9 @@ bool grid::ut()
         return false;
     }
     if (!test_can_place()) {
+        return false;
+    }
+    if (!test_grid_find_places()) {
         return false;
     }
     return true;
