@@ -16,6 +16,7 @@
 #include <utility>
 #include <fstream>
 #include <exception>
+#include <istream>
 
 class puzzle
 {
@@ -34,6 +35,13 @@ public:
         return grid_.render();
     }
     
+    void render(std::ostream& out) const {
+        auto s = render();
+        for (const auto& se : s) {
+            out << se << std::endl;
+        }
+    }
+    
     // Return the resultant answer list if the input
     // answer is added. If the list is empty, then the
     // input answer conflicted with the current state of
@@ -50,11 +58,6 @@ public:
             mark_new_answers(answers_, result);
         }
         return result;
-    }
-    
-    bool can_place(const std::string& word) const
-    {
-        return false;
     }
     
     std::vector<answer> find_places(const std::string& word) const

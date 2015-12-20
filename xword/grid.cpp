@@ -177,21 +177,25 @@ bool test_can_place()
     if (!mygrid.can_place(ans)) {
         cout << "Error in ut. couldn't place answer=" << ans.to_string() << " line=" << __LINE__ <<
         " file=" << __FILE__ << endl;
+        return false;
     }
     ans = answer{"HOE", make_pair(1,0), direction::DOWN};
     if (mygrid.can_place(ans)) {
         cout << "Error in ut. could place answer=" << ans.to_string() << " line=" << __LINE__ <<
         " file=" << __FILE__ << endl;
+        return false;
     }
     ans = answer{"HOE", make_pair(1,-2), direction::DOWN};
     if (!mygrid.can_place(ans)) {
         cout << "Error in ut. couldn't place answer=" << ans.to_string() << " line=" << __LINE__ <<
         " file=" << __FILE__ << endl;
+        return false;
     }
     ans = answer{"HOE", make_pair(2,-1), direction::DOWN};
-    if (!mygrid.can_place(ans)) {
-        cout << "Error in ut. couldn't place answer=" << ans.to_string() << " line=" << __LINE__ <<
+    if (mygrid.can_place(ans)) {
+        cout << "Error in ut. could place answer=" << ans.to_string() << " line=" << __LINE__ <<
         " file=" << __FILE__ << endl;
+        return false;
     }
     
     mygrid = grid{};
@@ -202,21 +206,25 @@ bool test_can_place()
     if (!mygrid.can_place(ans)) {
         cout << "Error in ut. couldn't place answer=" << ans.to_string() << " line=" << __LINE__ <<
         " file=" << __FILE__ << endl;
+        return false;
     }
     ans = answer{"HOE", make_pair(0,1), direction::ACROSS};
     if (mygrid.can_place(ans)) {
         cout << "Error in ut. could place answer=" << ans.to_string() << " line=" << __LINE__ <<
         " file=" << __FILE__ << endl;
+        return false;
     }
     ans = answer{"HOE", make_pair(-2,1), direction::ACROSS};
     if (!mygrid.can_place(ans)) {
         cout << "Error in ut. couldn't place answer=" << ans.to_string() << " line=" << __LINE__ <<
         " file=" << __FILE__ << endl;
+        return false;
     }
     ans = answer{"HOE", make_pair(-1,2), direction::ACROSS};
-    if (!mygrid.can_place(ans)) {
-        cout << "Error in ut. couldn't place answer=" << ans.to_string() << " line=" << __LINE__ <<
+    if (mygrid.can_place(ans)) {
+        cout << "Error in ut. could place answer=" << ans.to_string() << " line=" << __LINE__ <<
         " file=" << __FILE__ << endl;
+        return false;
     }
     return true;
 }

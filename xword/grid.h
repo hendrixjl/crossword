@@ -178,25 +178,33 @@ private:
     bool can_place_down(const answer& ans) const
     {
         const auto across = std::get<0>(ans.coordinate());
-        const auto down = std::get<1>(ans.coordinate());
-        if ((down < 0) || (down > rows()) || (across > columns())) {
-            return true; // no good
+        auto down = std::get<1>(ans.coordinate());
+        if ((across < 0) || (across > columns()) || (down > rows())) {
+            return false; // no good
         }
-        const auto word = (across >= 0) ? ans.get_word() : ans.get_word().substr(-across);
+        auto word = ans.get_word();
+        if (down < 0) {
+            word = word.substr(-down);
+            down = 0;
+        }
         auto slice = get_column(across);
-        return ::can_place(word, slice, 0);
+        return ::can_place(word, slice, down);
     }
 
     bool can_place_across(const answer& ans) const
     {
-        const auto across = std::get<0>(ans.coordinate());
+        auto across = std::get<0>(ans.coordinate());
         const auto down = std::get<1>(ans.coordinate());
-        if ((across < 0) || (across > columns()) || (down > rows())) {
-            return true; // no good
+        if ((down < 0) || (down > rows()) || (across > columns())) {
+            return false; // no good
         }
-        const auto word = (down >= 0) ? ans.get_word() : ans.get_word().substr(-down);
-        auto slice = get_row(down); // todo what if across is negative?
-        return ::can_place(word, slice, 0);
+        auto word = ans.get_word();
+        if (across < 0) {
+            word = word.substr(-across);
+            across = 0;
+        }
+        auto slice = get_row(down);
+        return ::can_place(word, slice, across);
     }
     
     void find_places_across(std::vector<answer>& res, const std::string& word) const

@@ -31,33 +31,79 @@ std::vector<answer> delta_list(std::vector<answer> one, std::vector<answer> two)
     return result;
 }
 
-bool test_puzzle_can_place()
+bool test_puzzle_place()
 {
-    auto start_answers = std::vector<answer>{answer{"2 4 A C AMAZIAH"}};
+    auto start_answers = std::vector<answer>{answer{"4 4 A C AMAZIAH"},
+        answer{"4 2 D C YEA"},
+        answer{"6 3 D C MAGOG"}};
+    
     auto mypuz = puzzle{start_answers};
-    
-    if (mypuz.can_place("food"))
-    {
-        cout << "Food shouldn't fit.\n";
-        return false;
-    }
-    
-    if (!mypuz.can_place("ICECYCLE"))
-    {
-        cout << "Should be able to place ICECYCLE.\n";
-        return false;
-    }
+//    mypuz.render(cout);
 
+    auto new_answers = mypuz.place(answer{"2 2 D I HAPPY"});
+    if (!new_answers.empty()) {
+        cout << "Error in ut. Adding should have failed." << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    new_answers = mypuz.place(answer{"0 2 A I HAPPY"});
+    if (new_answers.empty()) {
+        cout << "Error in ut. Adding should not have failed." << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+//    cout << endl;
+//    for (const auto a : new_answers) {
+//        cout << a.to_string() << endl;
+//    }
+    
+    auto delta = delta_list(start_answers, new_answers);
+    
+    if (delta.size() != 1) {
+        cout << "Error in ut. delta.size()=" << delta.size() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    if (delta[0].to_string() != "0 2 A I HAPPY") {
+        cout << "Error in ut. delta.size()=" << delta.size() << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    new_answers = mypuz.place(answer{"7 4 D I ZOO"});
+    
+    if (new_answers.empty()) {
+        cout << "Error in ut. Adding should not have failed." << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+//    cout << endl;
+//    for (const auto a : new_answers) {
+//        cout << a.to_string() << endl;
+//    }
+    
+    delta = delta_list(start_answers, new_answers);
+    
+    auto compare_to = std::vector<answer>{
+        answer{"7 4 D I ZOO"}, answer{"6 5 A I GO"}, answer{"6 6 A I OO"}};
+    
+    if (!is_permutation(delta.cbegin(), delta.cend(), compare_to.cbegin())) {
+        cout << "Expected permuation equal.\n";
+        cout << " Was:\n";
+        for (const auto& e : delta) {
+            cout << e.to_string() << ", ";
+        }
+        cout << "\n Expected:\n";
+        for (const auto& e : compare_to) {
+            cout << e.to_string() << ", ";
+        }
+        return false;
+    }
     return true;
 }
 
+
 bool puzzle::ut()
 {
-    if (!test_puzzle_can_place())
-    {
-        cout << "test_can_place() failed.\n";
-        return false;
-    }
     
     auto start_answers = std::vector<answer>{answer{"2 4 A C AMAZIAH"},
         answer{"1 7 A C AZOG"},
@@ -84,28 +130,9 @@ bool puzzle::ut()
         return false;
     }
     
-    auto new_answers1 = mypuz.place(answer{"7 12 A I HAPPY"});
-    if (!new_answers1.empty()) {
-        cout << "Adding conflict failed.\n";
+    if (!test_puzzle_place()) {
         return false;
     }
-    
-    auto new_answers2 = mypuz.place(answer{"7 13 A I HAPPY"});
-    //        cout << "After adding happy list.\n";
-    //        for (const auto& ans : new_answers2) {
-    //            cout << ans.to_string() << '\n';
-    //        }
-    
-    delta = delta_list(start_answers, new_answers2);
-    //        cout << "After adding happy delta list.\n";
-    //        for (const auto& ans : delta) {
-    //            cout << ans.to_string() << '\n';
-    //        }
-    if ((delta.size() != 1) || (delta[0].to_string() != "7 13 A I HAPPY")) {
-        cout << "Adding Happy failed.\n";
-        return false;
-    }
-    
     
     return true;
 }
