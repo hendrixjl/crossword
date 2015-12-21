@@ -51,5 +51,36 @@ bool answer::ut()
         return false;
     }
 
+    auto answers = vector<answer>{};
+    answers.push_back(an);
+    auto ul = find_upper_left_limits(answers);
+    if ((get<0>(ul) != 10) && (get<1>(ul) != 21)) {
+        cout << "Error. 0=" << get<0>(ul) << " 1=" << get<1>(ul) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+
+    auto an1 = answer{"-5 -10 A C JOE"};
+    answers.push_back(an1);
+    ul = find_upper_left_limits(answers);
+    if ((get<0>(ul) != -5) && (get<1>(ul) != -10)) {
+        cout << "Error. 0=" << get<0>(ul) << " 1=" << get<1>(ul) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    auto an2 = an1.translate(5, 10);
+    auto coord = an2.coordinate();
+    if ((get<0>(coord) != 0) && (get<1>(coord) != 0)) {
+        cout << "Error. 0=" << get<0>(coord) << " 1=" << get<1>(coord) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+    
+    auto tanswers = ::translate(5, 10, answers);
+    ul = find_upper_left_limits(tanswers);
+    if ((get<0>(ul) != 0) && (get<1>(ul) != 0)) {
+        cout << "Error. 0=" << get<0>(ul) << " 1=" << get<1>(ul) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+        return false;
+    }
+
+    
     return true;
 }

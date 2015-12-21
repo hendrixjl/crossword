@@ -116,8 +116,22 @@ bool test_puzzle_find_places()
         return false;
     }
     
-    for (const auto na : new_answers) {
-        cout << na.to_string() << endl;
+    auto compare_to = std::vector<answer>{
+        answer{"4 -2 D I HAPPY"}, answer{"9 3 D I HAPPY"}, answer{"10 4 D I HAPPY"},
+        answer{"0 2 A I HAPPY"}, answer{"10 4 A I HAPPY"}
+    };
+    
+    if (!is_permutation(new_answers.cbegin(), new_answers.cend(), compare_to.cbegin())) {
+        cout << "Expected permuation equal.\n";
+        cout << " Was:\n";
+        for (const auto& e : new_answers) {
+            cout << e.to_string() << ", ";
+        }
+        cout << "\n Expected:\n";
+        for (const auto& e : compare_to) {
+            cout << e.to_string() << ", ";
+        }
+        return false;
     }
 
     return true;

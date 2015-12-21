@@ -14,6 +14,7 @@
 #include <utility>
 #include <sstream>
 #include <algorithm>
+#include <limits>
 
 enum class direction
 {
@@ -205,14 +206,14 @@ inline std::pair<int,int> find_limits(const std::vector<answer> answers)
 
 inline std::pair<int,int> find_upper_left_limits(const std::vector<answer> answers)
 {
-    auto smallest_a = int{};
-    auto smallest_d = int{};
+    auto smallest_a = std::numeric_limits<int>::max();
+    auto smallest_d = std::numeric_limits<int>::max();
     for (const auto& answer : answers)
     {
         if (answer.coordinate().first < smallest_a) {
             smallest_a = answer.coordinate().first;
         }
-        if (answer.coordinate().second > smallest_d) {
+        if (answer.coordinate().second < smallest_d) {
             smallest_d = answer.coordinate().second;
         }
     }

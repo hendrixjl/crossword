@@ -18,6 +18,8 @@
 #include <exception>
 #include <istream>
 
+#include <iostream>
+
 class puzzle
 {
 public:
@@ -62,9 +64,15 @@ public:
     
     std::vector<answer> find_places(const std::string& word) const
     {
-        auto result = grid_.find_places(word);
-        auto extremes = find_upper_left_limits(result);
-        return ::translate(-std::get<0>(extremes), -std::get<1>(extremes), result);
+        return grid_.find_places(word);
+        // ToDo: handle translation in the place function
+//        auto result = grid_.find_places(word);
+//        for (auto r : result) {
+//            std::cout << r.to_string() << std::endl;
+//        }
+//        auto extremes = find_upper_left_limits(result);
+//        std::cout << std::get<0>(extremes) << " " << std::get<1>(extremes) << std::endl;
+//        return ::translate(-std::get<0>(extremes), -std::get<1>(extremes), result);
     }
     
 private:
