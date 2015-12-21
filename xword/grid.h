@@ -74,7 +74,7 @@ class grid
 public:
     static bool ut();
     
-    void resize(std::pair<int,int> extremes)
+    grid(std::pair<int,int> extremes)
     {
         const auto num = static_cast<std::size_t>(extremes.first)+1;
         const auto line = std::string(num, ' ');
@@ -84,6 +84,15 @@ public:
         {
             gridline = line;
         }
+    }
+    
+    grid(const std::vector<answer>& answers)
+    : grid(std::get<LowerRight>(find_limits(answers)))
+    {
+        for (const auto& answer : answers) {
+            overlay(answer);
+        }
+
     }
 
     void overlay(const answer& ans)

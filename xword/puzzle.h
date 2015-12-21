@@ -26,11 +26,8 @@ public:
     static bool ut();
     
     explicit puzzle(const std::vector<answer> answers)
-    : answers_(answers)
+    : grid_{answers}, answers_(answers)
     {
-        auto extremes = find_limits(answers);
-        grid_.resize(std::get<LowerRight>(extremes));
-        overlay(answers);
     }
     
     std::vector<std::string> render() const {
@@ -79,11 +76,6 @@ public:
 private:
     grid grid_;
     std::vector<answer> answers_;
-    
-    void resize(std::pair<int,int> extremes)
-    {
-        grid_.resize(extremes);
-    }
     
     void overlay(const answer& answer)
     {

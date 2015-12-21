@@ -100,8 +100,7 @@ bool test_find_places()
 
 bool test_grid_find_places()
 {
-    auto mygrid = grid{};
-    mygrid.resize(make_pair(10,10));
+    auto mygrid = grid{make_pair(10,10)};
     mygrid.overlay(answer{"HELLO", make_pair(0,0), direction::ACROSS});
     
     auto word = std::string{"HOE"};
@@ -132,8 +131,7 @@ bool test_grid_find_places()
         return false;
     }
     
-    mygrid = grid{};
-    mygrid.resize(make_pair(10,10));
+    mygrid = grid{make_pair(10,10)};
     mygrid.overlay(answer{"HELLO", make_pair(0,0), direction::DOWN});
     
     word = std::string{"POSH"};
@@ -165,8 +163,7 @@ bool test_grid_find_places()
 //        answer{"4 2 D C YEA"},
 //        answer{"6 3 D C MAGOG"}};
     
-    mygrid = grid{};
-    mygrid.resize(make_pair(10, 10));
+    mygrid = grid{make_pair(10, 10)};
     mygrid.overlay(answer{"1 1 A C AMAZIAH"});
     
     ans = mygrid.find_places("HAPPY");
@@ -199,8 +196,7 @@ bool test_grid_find_places()
 
 bool test_can_place()
 {
-    auto mygrid = grid{};
-    mygrid.resize(make_pair(10,10));
+    auto mygrid = grid{make_pair(10, 10)};
     mygrid.overlay(answer{"HELLO", make_pair(0,0), direction::ACROSS});
     
     auto ans = answer{"HOE", make_pair(0,0), direction::DOWN};
@@ -228,8 +224,7 @@ bool test_can_place()
         return false;
     }
     
-    mygrid = grid{};
-    mygrid.resize(make_pair(10,10));
+    mygrid = grid{make_pair(10, 10)};
     mygrid.overlay(answer{"HELLO", make_pair(0,0), direction::DOWN});
     
     ans = answer{"HOE", make_pair(0,0), direction::ACROSS};
