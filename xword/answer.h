@@ -28,6 +28,10 @@ enum class word_status
     COMPLETE
 };
 
+using coordinate = std::pair<int,int>;
+const auto UpperLeft = 0; // for extremes
+const auto LowerRight = 1; // for extremes
+
 class answer
 {
 public:
@@ -188,26 +192,12 @@ inline void mark_new_answers(const std::vector<answer>& oldanswers,
     }
 }
 
-inline std::pair<int,int> find_limits(const std::vector<answer> answers)
-{
-    auto biggest_a = int{};
-    auto biggest_d = int{};
-    for (const auto& answer : answers)
-    {
-        if (answer.last_coordinate().first > biggest_a) {
-            biggest_a = answer.last_coordinate().first;
-        }
-        if (answer.last_coordinate().second > biggest_d) {
-            biggest_d = answer.last_coordinate().second;
-        }
-    }
-    return std::make_pair(biggest_a, biggest_d);
-}
-
-inline std::pair<int,int> find_upper_left_limits(const std::vector<answer> answers)
+inline std::pair<std::pair<int,int>, std::pair<int,int>> find_limits(const std::vector<answer> answers)
 {
     auto smallest_a = std::numeric_limits<int>::max();
     auto smallest_d = std::numeric_limits<int>::max();
+    auto biggest_a = int{};
+    auto biggest_d = int{};
     for (const auto& answer : answers)
     {
         if (answer.coordinate().first < smallest_a) {
@@ -216,8 +206,15 @@ inline std::pair<int,int> find_upper_left_limits(const std::vector<answer> answe
         if (answer.coordinate().second < smallest_d) {
             smallest_d = answer.coordinate().second;
         }
+        if (answer.last_coordinate().first > biggest_a) {
+            biggest_a = answer.last_coordinate().first;
+        }
+        if (answer.last_coordinate().second > biggest_d) {
+            biggest_d = answer.last_coordinate().second;
+        }
     }
-    return std::make_pair(smallest_a, smallest_d);
+    return std::make_pair(std::make_pair(smallest_a, smallest_d),
+                          std::make_pair(biggest_a, biggest_d));
 }
 
 inline std::vector<answer> translate(int across, int down, const std::vector<answer> before)

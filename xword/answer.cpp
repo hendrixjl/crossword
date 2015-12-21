@@ -53,17 +53,18 @@ bool answer::ut()
 
     auto answers = vector<answer>{};
     answers.push_back(an);
-    auto ul = find_upper_left_limits(answers);
-    if ((get<0>(ul) != 10) && (get<1>(ul) != 21)) {
-        cout << "Error. 0=" << get<0>(ul) << " 1=" << get<1>(ul) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+    auto limits = find_limits(answers);
+    auto ul_limit = get<UpperLeft>(limits);
+    if ((get<0>(ul_limit) != 10) && (get<1>(ul_limit) != 21)) {
+        cout << "Error. 0=" << get<0>(ul_limit) << " 1=" << get<1>(ul_limit) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
         return false;
     }
 
     auto an1 = answer{"-5 -10 A C JOE"};
     answers.push_back(an1);
-    ul = find_upper_left_limits(answers);
-    if ((get<0>(ul) != -5) && (get<1>(ul) != -10)) {
-        cout << "Error. 0=" << get<0>(ul) << " 1=" << get<1>(ul) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+    ul_limit = get<UpperLeft>(find_limits(answers));
+    if ((get<0>(ul_limit) != -5) && (get<1>(ul_limit) != -10)) {
+        cout << "Error. 0=" << get<0>(ul_limit) << " 1=" << get<1>(ul_limit) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
         return false;
     }
     
@@ -75,9 +76,9 @@ bool answer::ut()
     }
     
     auto tanswers = ::translate(5, 10, answers);
-    ul = find_upper_left_limits(tanswers);
-    if ((get<0>(ul) != 0) && (get<1>(ul) != 0)) {
-        cout << "Error. 0=" << get<0>(ul) << " 1=" << get<1>(ul) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
+    ul_limit = get<UpperLeft>(find_limits(tanswers));
+    if ((get<0>(ul_limit) != 0) && (get<1>(ul_limit) != 0)) {
+        cout << "Error. 0=" << get<0>(ul_limit) << " 1=" << get<1>(ul_limit) << " line=" << __LINE__ << " file=" << __FILE__ << endl;
         return false;
     }
 

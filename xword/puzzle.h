@@ -29,7 +29,7 @@ public:
     : answers_(answers)
     {
         auto extremes = find_limits(answers);
-        grid_.resize(extremes);
+        grid_.resize(std::get<LowerRight>(extremes));
         overlay(answers);
     }
     
@@ -47,7 +47,8 @@ public:
     // Return the resultant answer list if the input
     // answer is added. If the list is empty, then the
     // input answer conflicted with the current state of
-    // the puzzle
+    // the puzzle. The resultant answer list will be
+    // normalized so that the upper left is (0,0)
     std::vector<answer> place(const answer& ans) const
     {
         std::vector<answer> result;
