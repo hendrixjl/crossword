@@ -20,6 +20,30 @@
 
 #include <iostream>
 
+
+// Return the list of answers normalized
+// so that the UpperLeft is (0,0)
+inline std::vector<answer> normalize_data(const std::vector<answer>& answers)
+{
+    const auto normal = std::get<UpperLeft>(find_limits(answers));
+    return ::translate(-std::get<0>(normal),
+                       -std::get<1>(normal),
+                       answers);
+}
+
+// Return the list of answers (and the proposed new answer) normalized
+// so that the UpperLeft is (0,0)
+inline void normalize_data(const std::vector<answer>& answers, const answer& proposed_ans,
+                           std::vector<answer>& translated_answers, answer& translated_ans)
+{
+    translated_answers = answers;
+    translated_answers.push_back(proposed_ans);
+    translated_answers = normalize_data(translated_answers);
+    translated_ans = translated_answers.back();
+    translated_answers.pop_back();
+}
+
+
 class puzzle
 {
 public:
@@ -48,34 +72,32 @@ public:
     // normalized so that the upper left is (0,0)
     std::vector<answer> place(const answer& ans) const
     {
-        std::vector<answer> result;
-        if (grid_.can_place(ans))
-        {
-            auto newpuzzle = puzzle{answers_};
-            newpuzzle.overlay(ans);
-            newpuzzle.fetch_across(result);
-            newpuzzle.fetch_down(result);
-            mark_new_answers(answers_, result);
+        auto proposed_ans = ans;
+        auto translated_answers = std::vector<answer>{};
+        normalize_data(answers_, ans, translated_answers, proposed_ans);
+
+        auto new_puzzle = puzzle{translated_answers};
+        if (new_puzzle.can_place(proposed_ans)) {
+            new_puzzle.overlay(proposed_ans);
+            auto result = new_puzzle.reverse_answers();
+            return result;
         }
-        return result;
+        return std::vector<answer>{};
     }
     
     std::vector<answer> find_places(const std::string& word) const
     {
         return grid_.find_places(word);
-        // ToDo: handle translation in the place function
-//        auto result = grid_.find_places(word);
-//        for (auto r : result) {
-//            std::cout << r.to_string() << std::endl;
-//        }
-//        auto extremes = find_upper_left_limits(result);
-//        std::cout << std::get<0>(extremes) << " " << std::get<1>(extremes) << std::endl;
-//        return ::translate(-std::get<0>(extremes), -std::get<1>(extremes), result);
     }
     
 private:
     grid grid_;
     std::vector<answer> answers_;
+    
+    bool can_place(const answer& ans) const
+    {
+        return grid_.can_place(ans);
+    }
     
     void overlay(const answer& answer)
     {
@@ -106,6 +128,15 @@ private:
         for (auto across = int{0}; across < last_col; ++across) {
             add_words_found(across, cols[across], direction::DOWN, ans);
         }
+    }
+    
+    std::vector<answer> reverse_answers() const
+    {
+        std::vector<answer> result;
+        fetch_across(result);
+        fetch_down(result);
+        mark_new_answers(answers_, result);
+        return result;
     }
 };
 

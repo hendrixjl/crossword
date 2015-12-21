@@ -28,7 +28,6 @@ enum class word_status
     COMPLETE
 };
 
-using coordinate = std::pair<int,int>;
 const auto UpperLeft = 0; // for extremes
 const auto LowerRight = 1; // for extremes
 
@@ -41,11 +40,11 @@ public:
     {
         auto new_coord = std::make_pair(std::get<0>(coord_) + across,
                                         std::get<1>(coord_) + down);
-        return answer{word, new_coord, dir};
+        return answer{word, new_coord, dir, status};
     }
     
-    answer(const std::string& w, std::pair<int,int> c, direction d)
-    : coord_{c}, dir{d}, status{word_status::IN_WORK}, word{w} {
+    answer(const std::string& w, std::pair<int,int> c, direction d, word_status st=word_status::IN_WORK)
+    : coord_{c}, dir{d}, status{st}, word{w} {
     }
     
     explicit answer(const std::string& s) {
